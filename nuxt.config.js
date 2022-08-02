@@ -8,6 +8,11 @@ export default {
     htmlAttrs: {
       lang: 'en',
     },
+    script: [
+      {
+        src: 'https://upload-widget.cloudinary.com/global/all.js'
+      }
+    ],
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
