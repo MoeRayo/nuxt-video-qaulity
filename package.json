@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/dotenv": "^1.4.1",
     "aws-sdk": "^2.1185.0",
     "console": "^0.7.2",
     "core-js": "^3.19.3",

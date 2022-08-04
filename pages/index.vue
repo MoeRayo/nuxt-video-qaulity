@@ -4,7 +4,6 @@
       <button class="f4 link dim br3 pv2 ph2 mb2 dib white bg-navy ba b--navy pointer mt3 mt0-l inline-flex items-center" @click="openUploadModal" v-if="isInitial">
         Upload video
       </button>
-
       <form v-if="url.length >0" class="tc ma" @click.prevent="enhanceVideo">
         <input type="text" :value="url" class="pa3 db w-100 br3 b--navy ba f4" disabled="true">
         <button class="f4 link dim br3 pv2 ph2 mb2 dib white bg-navy ba b--navy pointer mt3 inline-flex items-center">Enhance Video</button>
@@ -22,12 +21,6 @@ export default {
       uploadPreset: 'lan9vkdw',
       apiToken: '',
       jobId: '',
-      APP_KEY: 'kI9f5QNUdBsG7T6L1S3FfQ==',
-      APP_SECRET: 'VFaprRp3r3Qvjx7_TLJ2mib4lsv3Uia6G5m_xPfVpeo=',
-      dolbyURL: 'dlb://out/video-enhanced.mp4',
-      uploadURL: 'https://api.dolby.com/media/enhance',
-      downloadURL: 'https://api.dolby.com/media/output',
-      url: '',
       formData: null,
     }
   },
@@ -48,7 +41,7 @@ export default {
       ).open();
     },
     async enhanceVideo(){
-      const auth = Buffer.from(`${this.APP_KEY}:${this.APP_SECRET}`).toString('base64');
+      const auth = Buffer.from(`${process.env.APP_KEY}:${process.env.APP_SECRET}`).toString('base64');
       const response = await fetch('https://api.dolby.io/v1/auth/token', {
         method: 'POST',
         body: new URLSearchParams({
@@ -64,7 +57,7 @@ export default {
       const json = await response.json();
       this.apiToken = json.access_token;
 
-      const optionRequest = {
+      const enhanceRequest = {
         method: "POST",
         url: 'https://api.dolby.com/media/enhance',
         headers: {
@@ -78,7 +71,7 @@ export default {
         }
       }
 
-      const optionCheck = {
+      const enhancementCheck = {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${this.apiToken}`,
@@ -87,7 +80,7 @@ export default {
         },
       };
 
-      const optionDownload = {
+      const mediaDownload = {
         method: 'GET',
         url: 'https://api.dolby.com/media/output',
         headers: {
@@ -109,16 +102,16 @@ export default {
 
       let state = null;
   
-      this.$axios(optionRequest)
+      this.$axios(enhanceRequest)
       .then(async (response) =>{
         this.jobId = response.data.job_id
         while(state !== "Success"){
           await wait()
-          this.$axios(`https://api.dolby.com/media/enhance?job_id=${this.jobId}`,optionCheck)
+          this.$axios(`https://api.dolby.com/media/enhance?job_id=${this.jobId}`,enhancementCheck)
           .then((res)=> {
             state = res.data.status
             if(res.data.status === "Success"){
-              this.$axios(optionDownload)
+              this.$axios(mediaDownload)
               .then((response) => {
                 response
               })
