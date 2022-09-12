@@ -1,4 +1,4 @@
-# nuxt-video-enhancer
+# Nuxt video enhancer
 
 ## Build Setup
 
